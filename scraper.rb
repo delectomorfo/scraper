@@ -32,7 +32,8 @@ def scraper
   noticias = noticias.uniq.select { |noticia| noticia[:titulo].include? '¿' } # selecciona las noticias que contengan ¿
 
   noticias.each_with_index do |noticia, index|
-    puts (index + 1).to_s + '. ' + noticia[:titulo]
+    #puts (index + 1).to_s + '. ' + noticia[:titulo]
+    puts "#{index + 1}. #{noticia[:titulo]}"
   end
 
   puts '0. Salir'
