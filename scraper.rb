@@ -52,10 +52,8 @@ def scraper
   cuerpo = parsed_news.css('div.paragraph p')
 
   puts
-
   puts titulo
   titulo.size.times { print '-' }
-
   puts
 
   cuerpo.each do |parrafo|
@@ -63,9 +61,7 @@ def scraper
   end
 
   puts
-
   puts '> Presione Enter para regresar...'
-
   gets
 
   scraper
