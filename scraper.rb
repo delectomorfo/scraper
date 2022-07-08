@@ -17,7 +17,7 @@ def scraper
   url = 'https://www.elcolombiano.com/'
   unparsed_page = HTTParty.get(url)
   parsed_page = Nokogiri::HTML(unparsed_page.body)
-  noticias = Array.new
+  noticias = []
   titulares = parsed_page.css('article.article h3') # selecciona todos los titulares
 
   titulares.each do |titular|
@@ -32,7 +32,6 @@ def scraper
   noticias = noticias.uniq.select { |noticia| noticia[:titulo].include? '¿' } # selecciona las noticias que contengan ¿
 
   noticias.each_with_index do |noticia, index|
-    #puts (index + 1).to_s + '. ' + noticia[:titulo]
     puts "#{index + 1}. #{noticia[:titulo]}"
   end
 
@@ -40,9 +39,7 @@ def scraper
   print '> '
   numero = gets.chomp.to_i
 
-  if numero == 0
-    abort
-  end
+  abort if numero.zero?
 
   clear_screen
 
@@ -72,17 +69,14 @@ def scraper
   gets
 
   scraper
-
 end
 
 def clear_screen
-
   if RUBY_PLATFORM =~ /win32|win64|\.NET|windows|cygwin|mingw32/i
     system('cls')
   else
     system('clear')
   end
-
 end
 
 scraper
