@@ -117,7 +117,7 @@ def icon(category)
   when 'Independiente Medellín'
     '⚽'
   when 'Política'
-    '🤵🏻‍♂️'
+    '🤵🏻'
   when 'Música'
     '🎵'
   when 'Deportes'
