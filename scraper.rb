@@ -42,6 +42,7 @@ def print_menu
   end
 end
 
+# Scrapes the news from the website's homepage
 def scraper
   # puts 'Cargando titulares...'.colorize(:yellow)
 
@@ -66,6 +67,7 @@ def scraper
   print_menu
 end
 
+# Displays the article's content
 def print_article(article_number)
   clear_screen
 
@@ -108,9 +110,7 @@ def print_article(article_number)
   start_program
 end
 
-def get_news
-end
-
+# Prints out the menu's icons
 def icon(category)
   case category
   when 'Colombia'
@@ -154,6 +154,7 @@ def icon(category)
   end
 end
 
+# Clears the screen
 def clear_screen
   if RUBY_PLATFORM =~ /win32|win64|\.NET|windows|cygwin|mingw32/i
     system('cls')
@@ -162,6 +163,7 @@ def clear_screen
   end
 end
 
+# Starts the program
 def start_program
   clear_screen
   print_header
