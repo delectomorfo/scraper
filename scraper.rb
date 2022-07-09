@@ -26,7 +26,7 @@ def scraper
     noticia = {
       titulo: titular.css('h3').text.strip,
       url: url + titular.css('h3 a').attribute('href').to_s,
-      categoria: titular.css('div.categoria-noticia a').text
+      categoria: titular.css('div.categoria-noticia a').text.strip
     }
     noticias << noticia # ponemos cada noticia en el array
   end
@@ -34,7 +34,8 @@ def scraper
   noticias = noticias.uniq.select { |noticia| noticia[:titulo].include? '¿' } # selecciona las noticias que contengan ¿
 
   noticias.each_with_index do |noticia, index|
-    puts "#{index + 1}. #{noticia[:categoria].colorize(:magenta)} ➡️  #{noticia[:titulo]}"
+    puts "#{index + 1}. #{ icon(noticia[:categoria]) } #{noticia[:categoria].colorize(:magenta)} | #{noticia[:titulo]}"
+    # byebug
   end
 
   puts '0. Salir'.colorize(:red)
@@ -53,7 +54,7 @@ def scraper
   titulo = parsed_news.css('h1.headline').text
   lead = parsed_news.css('h2.lead').text.colorize(:light_white)
   cuerpo = parsed_news.css('div.paragraph p')
-  autor = "Por #{parsed_news.css('div.autor').text.strip}".colorize(:cyan)
+  autor = parsed_news.css('div.autor').text.strip.colorize(:cyan)
   foto = 'https:' + parsed_news.css('figure.imagen-noticia img').attribute('src').to_s
 
   puts
@@ -80,6 +81,37 @@ def scraper
   gets
 
   scraper
+end
+
+def icon(category)
+  case category
+    when 'Colombia'
+      '🇨🇴 '
+    when 'Mundo'
+      '🌎'
+    when 'Antioquia'
+      '🟢'
+    when 'Economía'
+      '💰'
+    when 'Tecnología'
+      '💻'
+    when 'Salud'
+      '💉'
+    when 'Cine'
+      '🎬'
+    when 'Fútbol'
+      '⚽'
+    when 'Cultura'
+      '🎨'
+    when 'Educación'
+      '🎓'
+    when 'Ciclismo'
+      '🚴'
+    when 'Otros'
+      '🌐'
+    else
+      '📰'
+  end
 end
 
 def clear_screen
