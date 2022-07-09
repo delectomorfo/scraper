@@ -31,7 +31,9 @@ def scraper
     noticias << noticia # ponemos cada noticia en el array
   end
 
-  noticias = noticias.uniq.select { |noticia| noticia[:titulo].include? ARGV[0].to_s } # selecciona las noticias que contengan ¿
+  filter_char = ARGV[0].to_s 
+
+  noticias = noticias.uniq.select { |noticia| noticia[:titulo].include? filter_char } # selecciona las noticias que contengan ¿
 
   noticias.each_with_index do |noticia, index|
     noticia[:categoria] = 'Noticias' if noticia[:categoria].empty?
@@ -43,9 +45,7 @@ def scraper
   puts '0. Salir'.colorize(:red)
   print '> '.colorize(:yellow)
 
-  ARGV.clear
-
-  numero = gets.chomp.to_i
+  numero = STDIN.gets.chomp.to_i
 
   abort if numero.zero?
 
@@ -84,7 +84,7 @@ def scraper
 
   puts
   puts 'Presione Enter para regresar...'.colorize(:red)
-  gets
+  STDIN.gets
 
   scraper
 end
