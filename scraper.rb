@@ -32,18 +32,32 @@ def print_menu
     end
   
     puts '0. Salir'.colorize(:red)
+    puts 'f. Filtrar'.colorize(:red)
+
     print '> '.colorize(:yellow)
   
-    @numero = STDIN.gets.chomp.to_i
+    @numero = STDIN.gets.chomp
   
-    abort if @numero.zero?
-  
-    print_article(:numero)
+    case @numero
+    when '0'
+      puts 'Saliendo...'.colorize(:red)
+      abort
+    when 1.to_s..@noticias.length.to_s
+      print_article(@numero.to_i)
+    when 'f'
+      puts 'Ingrese una expresión para filtrar los titulares:'.colorize(:yellow)
+      filter_char = STDIN.gets.chomp.to_s
+      scraper(filter_char)
+    else
+      puts 'Opción inválida'.colorize(:red)
+      # print_menu
+    end
+
   end
 end
 
 # Scrapes the news from the website's homepage
-def scraper
+def scraper(filter_char=ARGV[0].to_s)
   # puts 'Cargando titulares...'.colorize(:yellow)
 
   @url = 'https://www.elcolombiano.com/'
@@ -61,7 +75,7 @@ def scraper
     @noticias << @noticia # ponemos cada noticia en el array
   end
 
-  filter_char = ARGV[0].to_s 
+  # filter_char = ARGV[0].to_s 
 
   @noticias = @noticias.uniq.select { |noticia| noticia[:titulo].include? filter_char } # selecciona las noticias que contengan el filter_char
   print_menu
@@ -73,7 +87,7 @@ def print_article(article_number)
 
   print_header
 
-  new_url = @noticias[@numero - 1][:url]
+  new_url = @noticias[article_number - 1][:url]
 
   unparsed_news = HTTParty.get(new_url)
   parsed_news = Nokogiri::HTML(unparsed_news.body)
