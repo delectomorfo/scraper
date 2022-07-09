@@ -4,9 +4,8 @@ require 'byebug'
 require 'image2ascii'
 require 'colorize'
 
-def scraper
-  clear_screen
-
+# Prints out the newspaper's name
+def print_header
   puts '  ______ _         _____ ____  _      ____  __  __ ____ _____          _   _  ____  '
   puts ' |  ____| |       / ____/ __ \| |    / __ \|  \/  |  _ \_   _|   /\   | \ | |/ __ \ '
   puts ' | |__  | |      | |   | |  | | |   | |  | | \  / | |_) || |    /  \  |  \| | |  | |'
@@ -14,44 +13,65 @@ def scraper
   puts ' | |____| |____  | |___| |__| | |___| |__| | |  | | |_) || |_ / ____ \| |\  | |__| |'
   puts ' |______|______|  \_____\____/|______\____/|_|  |_|____/_____/_/    \_\_| \_|\____/ '
   puts
-  puts 'Escoja un titular:'
-  puts
-  url = 'https://www.elcolombiano.com/'
-  unparsed_page = HTTParty.get(url)
-  parsed_page = Nokogiri::HTML(unparsed_page.body)
-  noticias = []
-  titulares = parsed_page.css('article.article') # selecciona todos los artículos de la página
+end
 
+# Displays a menu of news stories
+def print_menu
+  if @noticias.nil? 
+    # puts 'No hay noticias disponibles'.colorize(:red)
+    scraper
+  else
+    puts 'Escoja un titular:'
+    puts
+    # Hay noticias disponibles
+    @noticias.each_with_index do |noticia, index|
+      noticia[:categoria] = 'Noticias' if noticia[:categoria].empty?
+  
+      puts "#{index + 1}. #{icon(noticia[:categoria])} #{noticia[:categoria].colorize(:magenta)} | #{noticia[:titulo]}"
+      # byebug
+    end
+  
+    puts '0. Salir'.colorize(:red)
+    print '> '.colorize(:yellow)
+  
+    @numero = STDIN.gets.chomp.to_i
+  
+    abort if @numero.zero?
+  
+    print_article(:numero)
+  end
+end
+
+def scraper
+  # puts 'Cargando titulares...'.colorize(:yellow)
+
+  @url = 'https://www.elcolombiano.com/'
+  unparsed_page = HTTParty.get(@url)
+  parsed_page = Nokogiri::HTML(unparsed_page.body)
+  @noticias = []
+  titulares = parsed_page.css('article.article') # selecciona todos los artículos de la página
+  
   titulares.each do |titular|
-    noticia = {
+    @noticia = {
       titulo: titular.css('h3').text.strip,
-      url: url + titular.css('h3 a').attribute('href').to_s,
+      url: @url.to_s + titular.css('h3 a').attribute('href').to_s,
       categoria: titular.css('div.categoria-noticia a').text.strip
     }
-    noticias << noticia # ponemos cada noticia en el array
+    @noticias << @noticia # ponemos cada noticia en el array
   end
 
   filter_char = ARGV[0].to_s 
 
-  noticias = noticias.uniq.select { |noticia| noticia[:titulo].include? filter_char } # selecciona las noticias que contengan ¿
+  @noticias = @noticias.uniq.select { |noticia| noticia[:titulo].include? filter_char } # selecciona las noticias que contengan el filter_char
+  print_menu
+end
 
-  noticias.each_with_index do |noticia, index|
-    noticia[:categoria] = 'Noticias' if noticia[:categoria].empty?
-
-    puts "#{index + 1}. #{icon(noticia[:categoria])} #{noticia[:categoria].colorize(:magenta)} | #{noticia[:titulo]}"
-    # byebug
-  end
-
-  puts '0. Salir'.colorize(:red)
-  print '> '.colorize(:yellow)
-
-  numero = STDIN.gets.chomp.to_i
-
-  abort if numero.zero?
-
+def print_article(article_number)
   clear_screen
 
-  new_url = noticias[numero - 1][:url]
+  print_header
+
+  new_url = @noticias[@numero - 1][:url]
 
   unparsed_news = HTTParty.get(new_url)
   parsed_news = Nokogiri::HTML(unparsed_news.body)
@@ -62,7 +82,6 @@ def scraper
   autor = parsed_news.css('div.autor').text.strip.colorize(:cyan)
   foto = "https:#{parsed_news.css('figure.imagen-noticia img').attribute('src')}"
 
-  puts
   (titulo.size + 4).times { print '-'.black.on_white }
   puts
   puts "| #{titulo} |".black.on_white
@@ -86,7 +105,10 @@ def scraper
   puts 'Presione Enter para regresar...'.colorize(:red)
   STDIN.gets
 
-  scraper
+  start_program
+end
+
+def get_news
 end
 
 def icon(category)
@@ -140,7 +162,13 @@ def clear_screen
   end
 end
 
-scraper
+def start_program
+  clear_screen
+  print_header
+  print_menu
+end
+
+start_program
 
 # titulares = parsed_page.css('span.priority-content')
 # titulares.count
