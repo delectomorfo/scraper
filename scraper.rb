@@ -26,14 +26,17 @@ def scraper
     noticia = {
       titulo: titular.css('h3').text.strip,
       url: url + titular.css('h3 a').attribute('href').to_s,
-      categoria: titular.css('div.categoria-noticia a').text.strip
+      categoria: titular.css('div.categoria-noticia a').text.strip 
     }
     noticias << noticia # ponemos cada noticia en el array
   end
 
-  noticias = noticias.uniq.select { |noticia| noticia[:titulo].include? '¿' } # selecciona las noticias que contengan ¿
+  noticias = noticias.uniq.select { |noticia| noticia[:titulo].include? ' ' } # selecciona las noticias que contengan ¿
 
   noticias.each_with_index do |noticia, index|
+    if noticia[:categoria].empty? 
+      noticia[:categoria] = 'Noticias'
+    end
     puts "#{index + 1}. #{ icon(noticia[:categoria]) } #{noticia[:categoria].colorize(:magenta)} | #{noticia[:titulo]}"
     # byebug
   end
