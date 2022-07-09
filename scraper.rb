@@ -51,21 +51,27 @@ def scraper
   parsed_news = Nokogiri::HTML(unparsed_news.body)
 
   titulo = parsed_news.css('h1.headline').text
-  lead = parsed_news.css('h2.lead').text
+  lead = parsed_news.css('h2.lead').text.colorize(:light_white)
   cuerpo = parsed_news.css('div.paragraph p')
+  autor = "Por #{parsed_news.css('div.autor').text.strip}".colorize(:cyan)
   foto = 'https:' + parsed_news.css('figure.imagen-noticia img').attribute('src').to_s
 
   puts
-  puts titulo.black.on_white
-  titulo.size.times { print '~'.colorize(:yellow) }
+  (titulo.size+4).times { print '-'.black.on_white }
+  puts
+  puts "| #{titulo} |".black.on_white
+  (titulo.size+4).times { print '-'.black.on_white }
+  puts
   puts
   puts lead
   puts
   ascii = Image2ASCII.new(foto)
-  ascii.generate(width: 100)
+  ascii.generate(width: 80)
+  puts
+  puts autor
   puts
   cuerpo.each do |parrafo|
-    puts parrafo.text
+    puts "  #{parrafo.text}"
     puts
   end
 
