@@ -1,5 +1,7 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
-gem 'httparty'
-gem 'nokogiri'
 gem 'byebug'
+gem 'colorize'
+gem 'httparty'
+gem 'image2ascii'
+gem 'nokogiri'

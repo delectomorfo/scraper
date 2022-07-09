@@ -1,6 +1,8 @@
 require 'nokogiri'
 require 'httparty'
 require 'byebug'
+require 'image2ascii'
+require 'colorize'
 
 def scraper
   clear_screen
@@ -18,13 +20,13 @@ def scraper
   unparsed_page = HTTParty.get(url)
   parsed_page = Nokogiri::HTML(unparsed_page.body)
   noticias = []
-  titulares = parsed_page.css('article.article h3') # selecciona todos los titulares
+  titulares = parsed_page.css('article.article') # selecciona todos los artículos de la página
 
   titulares.each do |titular|
     noticia = {
-      titulo: titular.text.strip,
-      url: url + titular.css('a').attribute('href').to_s,
-      categoria: titular.css('div.categoria-noticia').text
+      titulo: titular.css('h3').text.strip,
+      url: url + titular.css('h3 a').attribute('href').to_s,
+      categoria: titular.css('div.categoria-noticia a').text
     }
     noticias << noticia # ponemos cada noticia en el array
   end
@@ -32,11 +34,11 @@ def scraper
   noticias = noticias.uniq.select { |noticia| noticia[:titulo].include? '¿' } # selecciona las noticias que contengan ¿
 
   noticias.each_with_index do |noticia, index|
-    puts "#{index + 1}. #{noticia[:titulo]}"
+    puts "#{index + 1}. #{noticia[:categoria].colorize(:magenta)} ➡️  #{noticia[:titulo]}"
   end
 
-  puts '0. Salir'
-  print '> '
+  puts '0. Salir'.colorize(:red)
+  print '> '.colorize(:yellow)
   numero = gets.chomp.to_i
 
   abort if numero.zero?
@@ -49,19 +51,26 @@ def scraper
   parsed_news = Nokogiri::HTML(unparsed_news.body)
 
   titulo = parsed_news.css('h1.headline').text
+  lead = parsed_news.css('h2.lead').text
   cuerpo = parsed_news.css('div.paragraph p')
+  foto = 'https:' + parsed_news.css('figure.imagen-noticia img').attribute('src').to_s
 
   puts
-  puts titulo
-  titulo.size.times { print '-' }
+  puts titulo.black.on_white.blink
+  titulo.size.times { print '~'.colorize(:yellow) }
   puts
-
+  puts lead
+  puts
+  ascii = Image2ASCII.new(foto)
+  ascii.generate(width: 100)
+  puts
   cuerpo.each do |parrafo|
     puts parrafo.text
+    puts
   end
 
   puts
-  puts '> Presione Enter para regresar...'
+  puts 'Presione Enter para regresar...'.colorize(:red)
   gets
 
   scraper
