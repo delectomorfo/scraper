@@ -56,7 +56,7 @@ def scraper
   foto = 'https:' + parsed_news.css('figure.imagen-noticia img').attribute('src').to_s
 
   puts
-  puts titulo.black.on_white.blink
+  puts titulo.black.on_white
   titulo.size.times { print '~'.colorize(:yellow) }
   puts
   puts lead
