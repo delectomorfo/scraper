@@ -2,9 +2,11 @@
 
 ## Mac OS
 
+`brew install imagemagick@6 -s`
+
 `brew unlink imagemagick`
 
-`brew install imagemagick@6 -s && brew link imagemagick@6 --force`
+`brew link imagemagick@6 --force`
 
 `gem install rmagick`
 
