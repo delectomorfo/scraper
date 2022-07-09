@@ -26,7 +26,7 @@ def scraper
     noticia = {
       titulo: titular.css('h3').text.strip,
       url: url + titular.css('h3 a').attribute('href').to_s,
-      categoria: titular.css('div.categoria-noticia a').text.strip 
+      categoria: titular.css('div.categoria-noticia a').text.strip
     }
     noticias << noticia # ponemos cada noticia en el array
   end
@@ -34,10 +34,9 @@ def scraper
   noticias = noticias.uniq.select { |noticia| noticia[:titulo].include? ' ' } # selecciona las noticias que contengan ¿
 
   noticias.each_with_index do |noticia, index|
-    if noticia[:categoria].empty? 
-      noticia[:categoria] = 'Noticias'
-    end
-    puts "#{index + 1}. #{ icon(noticia[:categoria]) } #{noticia[:categoria].colorize(:magenta)} | #{noticia[:titulo]}"
+    noticia[:categoria] = 'Noticias' if noticia[:categoria].empty?
+
+    puts "#{index + 1}. #{icon(noticia[:categoria])} #{noticia[:categoria].colorize(:magenta)} | #{noticia[:titulo]}"
     # byebug
   end
 
@@ -55,22 +54,23 @@ def scraper
   parsed_news = Nokogiri::HTML(unparsed_news.body)
 
   titulo = parsed_news.css('h1.headline').text
-  lead = parsed_news.css('h2.lead').text.colorize(:light_white)
+  lead = parsed_news.css('h2.lead').text.colorize(:white)
   cuerpo = parsed_news.css('div.paragraph p')
   autor = parsed_news.css('div.autor').text.strip.colorize(:cyan)
-  foto = 'https:' + parsed_news.css('figure.imagen-noticia img').attribute('src').to_s
+  foto = "https:#{parsed_news.css('figure.imagen-noticia img').attribute('src')}"
 
   puts
-  (titulo.size+4).times { print '-'.black.on_white }
+  (titulo.size + 4).times { print '-'.black.on_white }
   puts
   puts "| #{titulo} |".black.on_white
-  (titulo.size+4).times { print '-'.black.on_white }
+  (titulo.size + 4).times { print '-'.black.on_white }
   puts
   puts
   puts lead
   puts
   ascii = Image2ASCII.new(foto)
   ascii.generate(width: 80)
+  puts foto
   puts
   puts autor
   puts
@@ -88,32 +88,44 @@ end
 
 def icon(category)
   case category
-    when 'Colombia'
-      '🇨🇴 '
-    when 'Mundo'
-      '🌎'
-    when 'Antioquia'
-      '🟢'
-    when 'Economía'
-      '💰'
-    when 'Tecnología'
-      '💻'
-    when 'Salud'
-      '💉'
-    when 'Cine'
-      '🎬'
-    when 'Fútbol'
-      '⚽'
-    when 'Cultura'
-      '🎨'
-    when 'Educación'
-      '🎓'
-    when 'Ciclismo'
-      '🚴'
-    when 'Otros'
-      '🌐'
-    else
-      '📰'
+  when 'Colombia'
+    '🇨🇴 '
+  when 'Mundo'
+    '🌎'
+  when 'Antioquia'
+    '🟢'
+  when 'Economía'
+    '💰'
+  when 'Tecnología'
+    '💻'
+  when 'Salud'
+    '💉'
+  when 'Cine'
+    '🎬'
+  when 'Fútbol'
+    '⚽'
+  when 'Cultura'
+    '🎨'
+  when 'Educación'
+    '🎓'
+  when 'Ciclismo'
+    '🚴'
+  when 'Otros'
+    '🌐'
+  when 'Paz y derechos humanos'
+    '☮️ '
+  when 'Independiente Medellín'
+    '⚽'
+  when 'Política'
+    '🤵🏻‍♂️'
+  when 'Música'
+    '🎵'
+  when 'Deportes'
+    '🏟️ '
+  when 'Tendencias'
+    '📈'
+  else
+    '📰'
   end
 end
 
