@@ -17,6 +17,28 @@ end
 
 # Displays a menu of news stories
 def print_menu
+  @ICONS = {
+    'Colombia'  => '🇨🇴 ',
+    'Mundo'  => '🌎',
+    'Antioquia'  => '🟢',
+    'Economía'  => '💰',
+    'Tecnología'  => '💻',
+    'Salud'  => '💉',
+    'Cine'  => '🎬',
+    'Fútbol'  => '⚽',
+    'Cultura'  => '🎨',
+    'Educación'  => '🎓',
+    'Ciclismo'  => '🚴',
+    'Otros'  => '🌐',
+    'Noticias'  => '📰',
+    'Paz y derechos humanos'  => '☮️ ',
+    'Independiente Medellín'  => '⚽',
+    'Política'  => '🤵🏻',
+    'Música'  => '🎵',
+    'Deportes'  => '🏟️ ',
+    'Tendencias'  => '📈'
+  }
+
   if @noticias.nil? 
     # puts 'No hay noticias disponibles'.colorize(:red)
     scraper
@@ -27,7 +49,7 @@ def print_menu
     @noticias.each_with_index do |noticia, index|
       noticia[:categoria] = 'Noticias' if noticia[:categoria].empty?
   
-      puts "#{index + 1}. #{icon(noticia[:categoria])} #{noticia[:categoria].colorize(:magenta)} | #{noticia[:titulo]}"
+      puts "#{index + 1}. #{@ICONS[noticia[:categoria]]} #{noticia[:categoria].colorize(:magenta)} | #{noticia[:titulo]}"
       # byebug
     end
   
@@ -45,14 +67,14 @@ def print_menu
     when 1.to_s..@noticias.length.to_s
       print_article(@numero.to_i)
     when 'f'
-      puts 'Ingrese una expresión para filtrar los titulares:'.colorize(:yellow)
+      print 'Ingrese una expresión para filtrar los titulares: '.colorize(:yellow)
       filter_char = STDIN.gets.chomp.to_s
+      clear_screen
       scraper(filter_char)
     else
       puts 'Opción inválida'.colorize(:red)
-      # print_menu
+      print_menu
     end
-
   end
 end
 
@@ -125,47 +147,8 @@ def print_article(article_number)
 end
 
 # Prints out the menu's icons
-def icon(category)
-  case category
-  when 'Colombia'
-    '🇨🇴 '
-  when 'Mundo'
-    '🌎'
-  when 'Antioquia'
-    '🟢'
-  when 'Economía'
-    '💰'
-  when 'Tecnología'
-    '💻'
-  when 'Salud'
-    '💉'
-  when 'Cine'
-    '🎬'
-  when 'Fútbol'
-    '⚽'
-  when 'Cultura'
-    '🎨'
-  when 'Educación'
-    '🎓'
-  when 'Ciclismo'
-    '🚴'
-  when 'Otros'
-    '🌐'
-  when 'Paz y derechos humanos'
-    '☮️ '
-  when 'Independiente Medellín'
-    '⚽'
-  when 'Política'
-    '🤵🏻'
-  when 'Música'
-    '🎵'
-  when 'Deportes'
-    '🏟️ '
-  when 'Tendencias'
-    '📈'
-  else
-    '📰'
-  end
+def icon
+  
 end
 
 # Clears the screen
