@@ -84,7 +84,7 @@ def print_menu
     when 1..@noticias.size
       print_article(@numero.to_i)
     else
-      puts 'Opción ' + @numero + ' inválida'.colorize(:red)
+      puts "Opción '#{@numero}' inválida.".colorize(:red)
       print_menu
     end
   end
