@@ -131,8 +131,7 @@ def print_article(article_number)
   puts
   puts "| #{titulo} |".black.on_white
   (titulo.size + 4).times { print '-'.black.on_white }
-  puts
-  puts
+  2.times puts
   puts lead
   puts
   ascii = Image2ASCII.new(foto)
