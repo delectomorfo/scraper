@@ -146,11 +146,6 @@ def print_article(article_number)
   start_program
 end
 
-# Prints out the menu's icons
-def icon
-  
-end
-
 # Clears the screen
 def clear_screen
   if RUBY_PLATFORM =~ /win32|win64|\.NET|windows|cygwin|mingw32/i
