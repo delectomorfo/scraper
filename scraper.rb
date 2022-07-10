@@ -75,9 +75,6 @@ def print_menu
       filter_char = STDIN.gets.chomp.to_s
       clear_screen
       scraper(filter_char)
-    else
-      # puts 'Opción ' + @numero + ' inválida'.colorize(:red)
-      # print_menu
     end
 
     case @numero.to_i
