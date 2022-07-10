@@ -66,20 +66,29 @@ def print_menu
     print '> '.colorize(:yellow)
   
     @numero = STDIN.gets.chomp
-  
+    
     case @numero
-    when '0'
+    when ''
       puts 'Saliendo...'.colorize(:red)
       abort
-    when 1.to_s..@noticias.length.to_s
-      print_article(@numero.to_i)
+    when '0' 
+      puts 'Saliendo...'.colorize(:red)
+      abort
     when 'f'
       print 'Ingrese una expresión para filtrar los titulares o Enter para ver todos: '.colorize(:yellow)
       filter_char = STDIN.gets.chomp.to_s
       clear_screen
       scraper(filter_char)
     else
-      puts 'Opción inválida'.colorize(:red)
+      # puts 'Opción ' + @numero + ' inválida'.colorize(:red)
+      # print_menu
+    end
+
+    case @numero.to_i
+      when 1..@noticias.size
+      print_article(@numero.to_i)
+    else
+      puts 'Opción ' + @numero + ' inválida'.colorize(:red)
       print_menu
     end
   end
