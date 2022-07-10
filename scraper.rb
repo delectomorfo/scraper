@@ -18,25 +18,26 @@ end
 # Displays a menu of news stories
 def print_menu
   @ICONS = {
-    'Colombia'  => '🇨🇴 ',
-    'Mundo'  => '🌎',
-    'Antioquia'  => '🟢',
-    'Economía'  => '💰',
-    'Tecnología'  => '💻',
-    'Salud'  => '💉',
-    'Cine'  => '🎬',
-    'Fútbol'  => '⚽',
-    'Cultura'  => '🎨',
-    'Educación'  => '🎓',
-    'Ciclismo'  => '🚴',
-    'Otros'  => '🌐',
-    'Noticias'  => '📰',
-    'Paz y derechos humanos'  => '☮️ ',
-    'Independiente Medellín'  => '⚽',
-    'Política'  => '🤵🏻',
-    'Música'  => '🎵',
-    'Deportes'  => '🏟️ ',
-    'Tendencias'  => '📈'
+    'Colombia' => '🇨🇴 ',
+    'Mundo' => '🌎',
+    'Antioquia' => '🟢',
+    'Economía' => '💰',
+    'Tecnología' => '💻',
+    'Salud' => '💉',
+    'Cine' => '🎬',
+    'Fútbol' => '⚽',
+    'Cultura' => '🎨',
+    'Educación' => '🎓',
+    'Ciclismo' => '🚴',
+    'Otros' => '🌐',
+    'Noticias' => '📰',
+    'Paz y derechos humanos' => '☮️ ',
+    'Independiente Medellín' => '⚽',
+    'Política' => '🤵🏻',
+    'Música' => '🎵',
+    'Deportes' => '🏟️ ',
+    'Tendencias' => '📈',
+    nil => '📰'
   }
 
   if @noticias.nil? 
@@ -48,8 +49,14 @@ def print_menu
     # Hay noticias disponibles
     @noticias.each_with_index do |noticia, index|
       noticia[:categoria] = 'Noticias' if noticia[:categoria].empty?
-  
-      puts "#{index + 1}. #{@ICONS[noticia[:categoria]]} #{noticia[:categoria].colorize(:magenta)} | #{noticia[:titulo]}"
+      
+      if @ICONS[noticia[:categoria]]
+        icon = @ICONS[noticia[:categoria]]
+      else
+        icon = @ICONS[nil]
+      end
+
+      puts "#{index + 1}. #{icon} #{noticia[:categoria].colorize(:magenta)} | #{noticia[:titulo]}"
       # byebug
     end
   
