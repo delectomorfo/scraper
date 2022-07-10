@@ -44,7 +44,7 @@ def print_menu
     # puts 'No hay noticias disponibles'.colorize(:red)
     scraper
   else
-    puts 'Escoja un titular:'
+    puts 'Escoja un titular:' if !@noticias.empty?
     puts
     # Hay noticias disponibles
     @noticias.each_with_index do |noticia, index|
@@ -116,6 +116,9 @@ def scraper(filter_char=ARGV[0].to_s)
   # filter_char = ARGV[0].to_s 
 
   @noticias = @noticias.uniq.select { |noticia| noticia[:titulo].include? filter_char } # selecciona las noticias que contengan el filter_char
+  
+  puts 'No hay noticias disponibles. Use otro filtro.'.colorize(:red) if @noticias.empty?
+  
   print_menu
 end
 
