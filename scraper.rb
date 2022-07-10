@@ -74,7 +74,7 @@ def print_menu
     when 1.to_s..@noticias.length.to_s
       print_article(@numero.to_i)
     when 'f'
-      print 'Ingrese una expresión para filtrar los titulares: '.colorize(:yellow)
+      print 'Ingrese una expresión para filtrar los titulares o Enter para ver todos: '.colorize(:yellow)
       filter_char = STDIN.gets.chomp.to_s
       clear_screen
       scraper(filter_char)
