@@ -40,38 +40,34 @@ def print_menu
     nil => '📰'
   }
 
-  if @noticias.nil? 
+  if @noticias.nil?
     # puts 'No hay noticias disponibles'.colorize(:red)
     scraper
   else
-    puts 'Escoja un titular:' if !@noticias.empty?
+    puts 'Escoja un titular:' unless @noticias.empty?
     puts
     # Hay noticias disponibles
     @noticias.each_with_index do |noticia, index|
       noticia[:categoria] = 'Noticias' if noticia[:categoria].empty?
-      
-      if @ICONS[noticia[:categoria]]
-        icon = @ICONS[noticia[:categoria]]
-      else
-        icon = @ICONS[nil]
-      end
+
+      icon = @ICONS[noticia[:categoria]] || nil
 
       puts "#{index + 1}. #{icon} #{noticia[:categoria].colorize(:magenta)} | #{noticia[:titulo]}"
       # byebug
     end
-  
+
     puts '0. Salir'.colorize(:red)
     puts 'f. Filtrar'.colorize(:red)
 
     print '> '.colorize(:yellow)
-  
+
     @numero = STDIN.gets.chomp
-    
+
     case @numero
     when ''
       puts 'Saliendo...'.colorize(:red)
       abort
-    when '0' 
+    when '0'
       puts 'Saliendo...'.colorize(:red)
       abort
     when 'f'
@@ -85,7 +81,7 @@ def print_menu
     end
 
     case @numero.to_i
-      when 1..@noticias.size
+    when 1..@noticias.size
       print_article(@numero.to_i)
     else
       puts 'Opción ' + @numero + ' inválida'.colorize(:red)
@@ -95,7 +91,7 @@ def print_menu
 end
 
 # Scrapes the news from the website's homepage
-def scraper(filter_char=ARGV[0].to_s)
+def scraper(filter_char = ARGV[0].to_s)
   # puts 'Cargando titulares...'.colorize(:yellow)
 
   @url = 'https://www.elcolombiano.com/'
@@ -103,7 +99,7 @@ def scraper(filter_char=ARGV[0].to_s)
   parsed_page = Nokogiri::HTML(unparsed_page.body)
   @noticias = []
   titulares = parsed_page.css('article.article') # selecciona todos los artículos de la página
-  
+
   titulares.each do |titular|
     @noticia = {
       titulo: titular.css('h3').text.strip,
@@ -113,12 +109,14 @@ def scraper(filter_char=ARGV[0].to_s)
     @noticias << @noticia # ponemos cada noticia en el array
   end
 
-  # filter_char = ARGV[0].to_s 
+  # filter_char = ARGV[0].to_s
 
-  @noticias = @noticias.uniq.select { |noticia| noticia[:titulo].include? filter_char } # selecciona las noticias que contengan el filter_char
-  
+  @noticias = # selecciona las noticias que contengan el filter_char
+    @noticias.uniq.select do |noticia|
+      noticia[:titulo].include? filter_char
+    end
   puts 'No hay noticias disponibles. Use otro filtro.'.colorize(:red) if @noticias.empty?
-  
+
   print_menu
 end
 
