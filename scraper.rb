@@ -33,7 +33,10 @@ def print_menu
     'Noticias' => '📰',
     'Paz y derechos humanos' => '☮️ ',
     'Independiente Medellín' => '⚽',
-    'Política' => '🤵🏻',
+    'Atlético Nacional' => '⚽',
+    'Fútbol Colombiano' => '⚽',
+    'Charlas de domingo' => '👄',
+    'Política' => '🧑🏻‍⚖️',
     'Música' => '🎵',
     'Deportes' => '🏟️ ',
     'Tendencias' => '📈',
@@ -47,13 +50,14 @@ def print_menu
     puts 'Escoja un titular:' unless @noticias.empty?
     puts
     # Hay noticias disponibles
+    # byebug
     @noticias.each_with_index do |noticia, index|
+      indexplusone = index + 1
       noticia[:categoria] = 'Noticias' if noticia[:categoria].empty?
 
       icon = @ICONS[noticia[:categoria]] || '📰'
 
-      puts "#{index + 1}. #{icon} #{noticia[:categoria].colorize(:magenta)} | #{noticia[:titulo]}"
-      # byebug
+      puts "#{format('%02d', indexplusone)}. #{icon} #{noticia[:categoria].colorize(:magenta)} | #{noticia[:titulo]}" unless noticia[:titulo].empty?
     end
 
     puts '0. Salir'.colorize(:red)
@@ -74,6 +78,7 @@ def print_menu
       print 'Ingrese una expresión para filtrar los titulares o Enter para ver todos: '.colorize(:yellow)
       filter_char = STDIN.gets.chomp.to_s
       clear_screen
+      print_header
       scraper(filter_char)
     end
 
@@ -98,12 +103,12 @@ def scraper(filter_char = ARGV[0].to_s)
   titulares = parsed_page.css('article.article') # selecciona todos los artículos de la página
 
   titulares.each do |titular|
-    @noticia = {
+    noticia = {
       titulo: titular.css('h3').text.strip,
       url: @url.to_s + titular.css('h3 a').attribute('href').to_s,
       categoria: titular.css('div.categoria-noticia a').text.strip
     }
-    @noticias << @noticia # ponemos cada noticia en el array
+    @noticias << noticia # ponemos cada noticia en el array
   end
 
   # filter_char = ARGV[0].to_s
