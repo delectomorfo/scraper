@@ -50,7 +50,7 @@ def print_menu
     @noticias.each_with_index do |noticia, index|
       noticia[:categoria] = 'Noticias' if noticia[:categoria].empty?
 
-      icon = @ICONS[noticia[:categoria]] || nil
+      icon = @ICONS[noticia[:categoria]] || '📰'
 
       puts "#{index + 1}. #{icon} #{noticia[:categoria].colorize(:magenta)} | #{noticia[:titulo]}"
       # byebug
@@ -157,6 +157,7 @@ def print_article(article_number)
   end
 
   puts
+  puts "Fuente: #{new_url.colorize(:cyan)}"
   puts 'Presione Enter para regresar...'.colorize(:red)
   STDIN.gets
 
