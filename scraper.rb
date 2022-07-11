@@ -40,6 +40,8 @@ def print_menu
     'Música' => '🎵',
     'Deportes' => '🏟️ ',
     'Tendencias' => '📈',
+    'Farándula' => '👨🏻‍🎤',
+    'Televisión' => '📺',
     nil => '📰'
   }
 
