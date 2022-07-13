@@ -1,6 +1,6 @@
 # Readme
 
-Read El Colombiano's front page news from the command line.
+Read El Colombiano's front page news from the command line. It also renders images into ASCII art. Who needs slow, bulky web browsers?
 
 **Usage:** `ruby scraper.rb [keyword-to-filter]`
 
