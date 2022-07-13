@@ -2,6 +2,10 @@
 
 Read El Colombiano's front page news from the command line.
 
+**Usage:** `ruby scraper.rb [keyword-to-filter]`
+
+**Example:** `ruby scraper.rb Presidente`
+
 ## Mac OS
 
 `brew install imagemagick@6 -s`
@@ -25,3 +29,8 @@ Read El Colombiano's front page news from the command line.
 `bundle install`
 
 `ruby scraper.rb`
+
+## Screenshots
+
+![Main menu](elco1.png)
+![Article view](elco2.png)
