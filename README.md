@@ -1,5 +1,7 @@
 # Readme
 
+Read El Colombiano's front page news from the command line.
+
 ## Mac OS
 
 `brew install imagemagick@6 -s`
