@@ -33,4 +33,5 @@ Read El Colombiano's front page news from the command line.
 ## Screenshots
 
 ![Main menu](elco1.png)
+
 ![Article view](elco2.png)
