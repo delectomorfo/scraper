@@ -1,6 +1,7 @@
 require 'nokogiri'
 require 'httparty'
 require 'byebug'
+require 'open-uri'
 require 'image2ascii'
 require 'colorize'
 
@@ -102,15 +103,22 @@ def scraper(filter_char = ARGV[0].to_s)
   unparsed_page = HTTParty.get(@url)
   parsed_page = Nokogiri::HTML(unparsed_page.body)
   @noticias = []
-  titulares = parsed_page.css('article.article') # selecciona todos los artículos de la página
-
-  titulares.each do |titular|
-    noticia = {
-      titulo: titular.css('h3').text.strip,
-      url: @url.to_s + titular.css('h3 a').attribute('href').to_s,
-      categoria: titular.css('div.categoria-noticia a').text.strip
-    }
-    @noticias << noticia # ponemos cada noticia en el array
+  parsed_page.css('article.article').each do |article|
+    title_node = article.at_css('div.div_iter_title span.priority-content') ||
+                 article.at_css('h3.title__noticia__principal span.priority-content')
+    next unless title_node
+    title = title_node.text.strip
+    href = article.at_css('div.div_iter_url')['data-urldestination'] rescue nil
+    if href.nil? || href.empty?
+      link = article.at_css('h3.title__noticia__principal a')
+      href = link['href'] if link
+    end
+    next unless href
+    url = href.start_with?('http') ? href : "#{@url.chomp('/')}#{href}"
+    category_node = article.at_css('div.div_iter_categoria') ||
+                    article.at_css('h4.categorie__noticia__principal a')
+    category = category_node.text.strip rescue ''
+    @noticias << { titulo: title, url: url, categoria: category }
   end
 
   # filter_char = ARGV[0].to_s
@@ -135,11 +143,17 @@ def print_article(article_number)
   unparsed_news = HTTParty.get(new_url)
   parsed_news = Nokogiri::HTML(unparsed_news.body)
 
-  titulo = parsed_news.css('h1.headline').text
-  lead = parsed_news.css('h2.lead').text.colorize(:white)
+  # Extract headline from article page
+  title_node = parsed_news.at_css('h1[itemprop="headline"] span.priority-content') ||
+               parsed_news.at_css('h1[itemprop="headline"]') ||
+               parsed_news.at_css('h1.headline')
+  titulo = title_node ? title_node.text.strip : ''
+  # Extract lead paragraph
+  lead_node = parsed_news.at_css('p.lead') || parsed_news.at_css('h2.lead')
+  lead = lead_node ? lead_node.text.strip.colorize(:white) : ''
   cuerpo = parsed_news.css('div.paragraph p')
   autor = parsed_news.css('div.autor').text.strip.colorize(:cyan)
-  foto = "https:#{parsed_news.css('figure.imagen-noticia img').attribute('src')}"
+  img_src = parsed_news.at_css('figure.imagen-noticia img')&.[]('src')
 
   (titulo.size + 4).times { print '-'.black.on_white }
   puts
@@ -149,10 +163,17 @@ def print_article(article_number)
   puts
   puts lead
   puts
-  ascii = Image2ASCII.new(foto)
-  ascii.generate(width: 80)
-  puts foto
-  puts
+  if img_src && !img_src.empty?
+    foto = img_src.start_with?('//') ? "https:#{img_src}" : img_src
+    begin
+      ascii = Image2ASCII.new(foto)
+      ascii.generate(width: 80)
+    rescue StandardError => e
+      warn "[Error generating ASCII image: #{e.message}]"
+    end
+    puts foto
+    puts
+  end
   puts autor
   puts
   cuerpo.each do |parrafo|
